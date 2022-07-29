@@ -40,11 +40,11 @@ INSTALLED_APPS = [
     'corsheaders',                      #corsheaders so frontend cann access the API
     'rest_framework',
     'gdstorage',                        #App for Google Drive integration
+    'drf_multiple_model',               #library to send multiple serializer in a single view
      # Add our new application
     'api.apps.ApiConfig',
     'django_cleanup.apps.CleanupConfig', #To clean up old media files
-    # 'backend',
-    # 'api'
+
 ]
 
 MIDDLEWARE = [
@@ -142,5 +142,5 @@ else:
     pass
 #cors settings, add front end domains to the whitelist. localhost:3000 is the default domain when using create-react-app for example
 CORS_ORIGIN_WHITELIST = [
-    'http://localhost:3000',
+    'https://ntueeegarage.github.io',
 ]

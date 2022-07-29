@@ -1,3 +1,4 @@
+from xmlrpc.client import boolean
 from django.db import models
 from django.core.validators import FileExtensionValidator
 from django.urls import reverse # Used to generate URLs by reversing the URL patterns
@@ -47,32 +48,6 @@ class EventImage(models.Model):
         """String for representing the Model object."""
         return self.image.name
 
-
-class Workshop(models.Model):
-    name = models.CharField(max_length=200, help_text='Enter name of Workshop')
-    date = models.DateField()
-    desc = models.CharField(max_length=200, help_text='Enter description of Workshop')
-    article = models.TextField(default = None)
-    #ImageField uses Google Drive backend
-    displayImage = models.ImageField(upload_to = 'Workshop Image/', storage=gd_storage, max_length=100, verbose_name = "Workshop Image", default = None)
-    #FileField uses Google Drive backend
-    contentVideo = models.FileField(upload_to='Workshop Videos/', storage=gd_storage, null=True,
-                    validators=[FileExtensionValidator(allowed_extensions=['MOV','avi','mp4','webm','mkv'])])
-    link = models.URLField(default=None)
-    def __str__(self):
-        """String for representing the Model object."""
-        return self.name
-    # def get_absolute_url(self):
-    #     """Returns the URL to access a particular instance of the model."""
-    #     return reverse('model-detail-view', args=[str(self.id)])
-class WorkshopImage(models.Model):
-    Event = models.ForeignKey(Workshop, default=None, on_delete=models.CASCADE, related_name="contentImages")
-    image = models.ImageField(upload_to='images/', storage=gd_storage)
-    def __str__(self):
-        """String for representing the Model object."""
-        return self.image.name
-
-
 class Project(models.Model):
     name = models.CharField(max_length=200, help_text='Enter name of Project')
     desc = models.CharField(max_length=200, help_text='Enter description of Project')
@@ -94,24 +69,17 @@ class ProjectImage(models.Model):
         """String for representing the Model object."""
         return self.image.name
 
+class InnovatorRegistration(models.Model):
+    regIsOpen = models.BooleanField()
+    regLink = models.TextField(default = None)
 
-class StartUp(models.Model):
-    name = models.CharField(max_length=200, help_text='Enter name of StartUp')
-    desc = models.CharField(max_length=200, help_text='Enter description of StartUp')
-    article = models.TextField(default = None)
-    displayImage = models.ImageField(upload_to = 'StartUp Image/', storage=gd_storage, max_length=100, verbose_name = "StartUp Image", default = None)
-    contentVideo = models.FileField(upload_to='StartUp Videos/', storage=gd_storage, null=True,
-                    validators=[FileExtensionValidator(allowed_extensions=['MOV','avi','mp4','webm','mkv'])])
-    link = models.URLField(default=None)
+    def save(self, *args, **kwargs):
+        if not self.pk and InnovatorRegistration.objects.exists():
+        # if you'll not check for self.pk 
+        # then error will also raised in update of exists model
+            raise ValidationError('There is can be only one InnovatorRegistration instance')
+        return super(InnovatorRegistration, self).save(*args, **kwargs)
+    
     def __str__(self):
         """String for representing the Model object."""
-        return self.name
-    # def get_absolute_url(self):
-    #     """Returns the URL to access a particular instance of the model."""
-    #     return reverse('model-detail-view', args=[str(self.id)])
-class StartUpImage(models.Model):
-    Event = models.ForeignKey(StartUp, default=None, on_delete=models.CASCADE, related_name="contentImages")
-    image = models.ImageField(upload_to='images/', storage=gd_storage)
-    def __str__(self):
-        """String for representing the Model object."""
-        return self.image.name
+        return self.regLink

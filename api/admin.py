@@ -1,8 +1,8 @@
 from django import forms
 from django.contrib import admin
 from .models import (
-    Ambassador, Event, Workshop, Project, StartUp,
-    AmbassadorImage, EventImage, WorkshopImage, ProjectImage, StartUpImage,
+    Ambassador, Event, Project,
+    AmbassadorImage, EventImage, ProjectImage, InnovatorRegistration
 )
 
 class AmbassadorForm(forms.ModelForm):
@@ -37,25 +37,6 @@ class EventAdmin(admin.ModelAdmin):
     fields = ['name', 'date', 'desc', 'article', 'isFlagshipEvent', 'displayImage', 'contentVideo', 'link']
     inlines = [EventImageInline]
 
-
-class WorkshopForm(forms.ModelForm):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields['contentVideo'].required = False
-    class Meta:
-        model = Workshop
-        fields = '__all__'
-class WorkshopImageInline(admin.TabularInline):
-    model = WorkshopImage
-@admin.register(Workshop)
-class WorkshopAdmin(admin.ModelAdmin):
-    form = WorkshopForm
-    list_display = ('name', 'date', 'desc', 'article', 'displayImage', 'contentVideo', 'link')
-    fields = ['name', 'date', 'desc', 'article', 'displayImage', 'contentVideo', 'link']
-    inlines = [WorkshopImageInline]
-
-
-
 class ProjectForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -72,22 +53,4 @@ class ProjectAdmin(admin.ModelAdmin):
     fields = ['name', 'desc', 'article', 'displayImage', 'contentVideo', 'link']  
     inlines = [ProjectImageInline]
 
-
-
-class StartUpForm(forms.ModelForm):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields['contentVideo'].required = False
-    class Meta:
-        model = Project
-        fields = '__all__'
-class StartUpImageInline(admin.TabularInline):
-    model = StartUpImage
-@admin.register(StartUp)
-class StartUp(admin.ModelAdmin):
-    form = StartUpForm
-    list_display = ('name', 'desc', 'article', 'displayImage', 'contentVideo', 'link')
-    fields = ['name', 'desc', 'article', 'displayImage', 'contentVideo', 'link']   
-    inlines = [StartUpImageInline]
-
-# Register your models here
+admin.site.register(InnovatorRegistration)
